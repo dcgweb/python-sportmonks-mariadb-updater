@@ -1,5 +1,4 @@
 import helper, mariadb, secrets
-from termcolor import colored
 from mariadb import Error
 
 class Db:

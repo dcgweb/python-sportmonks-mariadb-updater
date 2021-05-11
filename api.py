@@ -1,5 +1,4 @@
 import requests, constants, json, helper, secrets
-from termcolor import colored
 
 class Api:
     def __enter__(self):
