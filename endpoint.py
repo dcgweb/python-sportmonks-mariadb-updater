@@ -2,13 +2,12 @@ import helper, requests, json, secrets, constants
 from api import Api
 
 class Endpoint(Api):
-    def __init__(self, action, includes = []):
+    def __init__(self):
         Api.__init__(self)
-        self.includes = includes
+
+    def query(self, action, includes = []):
         self.action = action
         self.includes = includes
-
-    def query(self):
         self.latest_query = self.action
         with requests.Session() as r:
             # try to call api with no params // todo => add params
