@@ -1,14 +1,14 @@
-import constants, helper, mariadb
+import helper, mariadb, secrets
 from termcolor import colored
 from mariadb import Error
 
 class Db:
     def __init__(self):
-        self.user = constants.MDB_USERNAME
-        self.password = constants.MDB_PASSWORD
-        self.host = constants.MDB_ADDRESS
-        self.port = constants.MDB_SRVPORT
-        self.database = constants.MDB_DATABASE
+        self.user = secrets.MDB_USERNAME
+        self.password = secrets.MDB_PASSWORD
+        self.host = secrets.MDB_ADDRESS
+        self.port = secrets.MDB_SRVPORT
+        self.database = secrets.MDB_DATABASE
         self.conn = None
         self.cursor = None
         self.e = None

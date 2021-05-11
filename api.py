@@ -1,4 +1,4 @@
-import requests, constants, json, helper
+import requests, constants, json, helper, secrets
 from termcolor import colored
 
 class Api:
@@ -18,7 +18,7 @@ class Api:
         with requests.Session() as r:
             # try to call api with no params // todo => add params
             try:
-                response = r.get(constants.API_URL + self.action, params=[('api_token', constants.API_KEY), ('page', "1")], timeout=constants.DEFAULT_TIMEOUT)
+                response = r.get(secrets.API_URL + self.action, params=[('api_token', secrets.API_KEY), ('page', "1")], timeout=constants.DEFAULT_TIMEOUT)
                 self.query_amt += 1
             except Exception as e:
                 helper.write_log(f"Latest API query of : {self.latest_query} failed with {e}")
@@ -59,7 +59,7 @@ class Api:
         for page in range(2, int(last_page) + 1):
             with requests.Session() as r:
                 try:
-                    response = r.get(constants.API_URL + self.action, params=[('api_token', constants.API_KEY), ('page', str(page))], timeout=constants.DEFAULT_TIMEOUT)
+                    response = r.get(secrets.API_URL + self.action, params=[('api_token', secrets.API_KEY), ('page', str(page))], timeout=constants.DEFAULT_TIMEOUT)
                     self.query_amt += 1
                 except Exception as e:
                     helper.write_log(f"Latest API query of : {self.latest_query} failed with {e}")
