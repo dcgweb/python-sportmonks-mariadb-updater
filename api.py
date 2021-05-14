@@ -5,7 +5,6 @@ class Api:
         return self
 
     def __init__(self):
-        self.data = []
         self.error = None
         self.query_amt = 0
         self.latest_query = None
@@ -43,5 +42,5 @@ class Api:
     def __exit__(self, exc_type, exc_val, exc_tb):
         print(f"Total Queries : {self.query_amt}")
         if(self.error):
-            print(f"Errors : {self.error}")
+            helper.log(f"Errors : {self.error}")
         print('Successfully destroyed the API Class')
