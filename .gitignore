@@ -131,3 +131,4 @@ dmypy.json
 #Custom
 .vscode/
 secrets.py
+_notes.txt
