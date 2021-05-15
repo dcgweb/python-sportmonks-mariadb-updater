@@ -16,6 +16,12 @@ import helper
 
 class TestHelper(unittest.TestCase):
 
+    def setUp(self) -> None:
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
     def test_get_keys_from_dict__with_empty_params(self):
 
         self.assertFalse(helper.get_keys_from_dict(None, None, None))
