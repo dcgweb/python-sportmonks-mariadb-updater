@@ -1,4 +1,5 @@
-import requests, constants, json, helper, secrets
+import requests, constants, json, secrets, logging
+from logging.handlers import RotatingFileHandler
 
 class Api:
     def __enter__(self):
@@ -8,15 +9,20 @@ class Api:
         self.error = None
         self.query_amt = 0
         self.latest_query = None
-        print('Successfully initialized API Class')
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(getattr(logging, str(constants.LOG_LEVEL)))
+        self.file_handler = RotatingFileHandler(constants.API_LOG_FILENAME, maxBytes=constants.LOG_MAX_BYTES, backupCount=constants.LOG_BACKUP_COUNT)
+        self.file_handler.setFormatter(logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(funcName)s:%(message)s'))
+        self.logger.addHandler(self.file_handler)
 
     def get_total_pages(self, data):
         try:
             total_pages = data['meta']['pagination']['total_pages']
         except:
-            helper.write_log('Total pages was undefined, assuming it to be 1')
+            self.logger.warning(f"Total pages count could not be determined, presuming it to be 1")
             total_pages = 1
         finally:
+            self.logger.debug(f"{str(total_pages)} in total")
             return total_pages
 
     def paginator(self, data, last_page):
@@ -28,7 +34,7 @@ class Api:
                     response = r.get(secrets.API_URL + self.action, params=[('api_token', secrets.API_KEY), ('page', str(page))], timeout=constants.DEFAULT_TIMEOUT)
                     self.query_amt += 1
                 except Exception as e:
-                    helper.write_log(f"Latest API query of : {self.latest_query} failed with {e}")
+                    self.logger.error(f"Latest API query of : {str(self.latest_query)} failed with {str(e)}")
                     self.error = e
                     return False
                 else:
@@ -40,7 +46,6 @@ class Api:
             return True
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(f"Total Queries : {self.query_amt}")
+        self.logger.debug(f"Total Queries : {self.query_amt}")
         if(self.error):
-            helper.log(f"Errors : {self.error}")
-        print('Successfully destroyed the API Class')
+            self.logger.error(f"Errors : {self.error}")

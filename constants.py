@@ -1,11 +1,22 @@
 # Debug disables the logging to be printed on screen, writes all logs to a file
-DEBUG = True
+DEBUG = False
+
+# Loggging configuration
+LOG_LEVEL = 'WARNING'
+LOG_MAX_BYTES = 1000000
+LOG_BACKUP_COUNT = 5
+
+APP_LOG_FILENAME = "./logs/app.log"
+EP_LOG_FILENAME  = "./logs/endpoint.log"
+API_LOG_FILENAME = "./logs/api.log"
+DB_LOG_FILENAME = "./logs/db.log"
+
+
 
 # Defines timeouts for every api query and etc.
 DEFAULT_TIMEOUT = (15, 30)
 
-# Log filename which will be rotated with a timestamp
-LOG_FILENAME = "latest.log"
+
 
 SECOND_API_URL = "https://www.thesportsdb.com/api/v1/json/"
 TWITTER_API_URL = ""
