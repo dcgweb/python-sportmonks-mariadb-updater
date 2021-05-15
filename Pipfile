@@ -9,6 +9,10 @@ termcolor = "*"
 phpserialize = "*"
 requests = "*"
 mariadb = "*"
+pymysql = "*"
+sqlalchemy = "*"
+sqlacodegen = "*"
+random-word-generator = "*"
 
 [dev-packages]
 
