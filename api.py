@@ -12,7 +12,7 @@ class Api:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(getattr(logging, str(constants.LOG_LEVEL)))
         self.file_handler = RotatingFileHandler(constants.API_LOG_FILENAME, maxBytes=constants.LOG_MAX_BYTES, backupCount=constants.LOG_BACKUP_COUNT)
-        self.file_handler.setFormatter(logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(funcName)s:%(message)s'))
+        self.file_handler.setFormatter(logging.Formatter(constants.LOG_FORMAT))
         self.logger.addHandler(self.file_handler)
 
     def get_total_pages(self, data):
