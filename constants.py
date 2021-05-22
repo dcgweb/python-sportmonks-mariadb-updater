@@ -10,7 +10,9 @@ APP_LOG_FILENAME = "./logs/app.log"
 EP_LOG_FILENAME  = "./logs/endpoint.log"
 API_LOG_FILENAME = "./logs/api.log"
 DB_LOG_FILENAME = "./logs/db.log"
+DATA_LOG_FILENAME = "./logs/data.log"
 
+LOG_FORMAT = '%(asctime)s:%(name)s:%(levelname)s:%(funcName)s:%(message)s'
 
 
 # Defines timeouts for every api query and etc.
