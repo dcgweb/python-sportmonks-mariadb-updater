@@ -105,6 +105,14 @@ class Data:
                         'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
                     }
                 )
+            elif(self.endpoint == 'lineups'):
+                self.reshaped_data.append(
+                    {
+                        'id': elem['id'],
+                        'lineup': serialize(elem['lineup']['data']) if elem['lineup']['data']!=None else None,
+                        'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                    }
+                )
             elif(self.endpoint == 'countries'):
                 self.reshaped_data.append(
                     {
