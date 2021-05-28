@@ -41,8 +41,12 @@ def remove_key(data = None, key = 'id'):
         del omitted_data[key]
     return omitted_data
 
-def db_summary(affected_rows = (0, 0)):
-    if(affected_rows[0] > 0):
-        print(f"Inserted {affected_rows[0]} rows")
-    if(affected_rows[1] > 0):
-        print(f"Updated {affected_rows[1]} rows")
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+def db_summary(affected_rows = (0, 0), endpoint = None, tbl = None):
+    if(isinstance(affected_rows, bool) == False):
+        if(affected_rows[0] > 0 or affected_rows[1] > 0):
+            print(f"{endpoint} -> {tbl}:INSERT({affected_rows[0]}) - UPDATE({affected_rows[1]})")
