@@ -129,8 +129,6 @@ class Db:
         return separated_list
 
 
-
-
 Base = declarative_base()
 metadata = Base.metadata
 class ApiQuery(Base):
