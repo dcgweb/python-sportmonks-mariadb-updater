@@ -1,8 +1,8 @@
 # Debug disables the logging to be printed on screen, writes all logs to a file
-DEBUG = False
+DEBUG = True
 
 # Loggging configuration
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'INFO'
 LOG_MAX_BYTES = 1000000
 LOG_BACKUP_COUNT = 5
 
