@@ -1,6 +1,6 @@
 from api import Api
 from logging.handlers import RotatingFileHandler
-import requests, json, secrets, constants, logging
+import db, requests, json, secrets, constants, logging
 
 class Endpoint(Api):
 
@@ -12,6 +12,7 @@ class Endpoint(Api):
         self.file_handler.setFormatter(logging.Formatter(constants.LOG_FORMAT))
         self.logger.addHandler(self.file_handler)
         self.data = []
+        self.injection = None
 
     def __enter__(self):
         return self
@@ -21,13 +22,14 @@ class Endpoint(Api):
         self.action = None
         self.includes = []
         self.latest_query = None
-        self.logger.debug(f"Total Queries : {self.query_amt}")
+        print(f"Total Queries : {self.query_amt}")
+        self.logger.info(f"Total Queries : {self.query_amt}")
 
     def get_total_pages(self, data):
         try:
             total_pages = data['meta']['pagination']['total_pages']
         except:
-            self.logger.warning(f"Total pages count could not be determined, presuming it to be 1")
+            # self.logger.warning(f"Total pages count could not be determined, presuming it to be 1")
             return 1
         else:
             self.logger.info(f"{str(total_pages)} in total")
@@ -41,14 +43,27 @@ class Endpoint(Api):
             print(f'Paginating on {self.action}:{self.includes}:P{page}')
             self.query(self.action, self.includes, page)
 
+    def squad(self):
+        # https://soccer.sportmonks.com/api/v2.0/squad/season/{season_ID}/team/{team_ID}
+        with db.Db() as database:
+            count = 0
+            # Get active season id's
+            db_seasons_ids = list(map(lambda x: x.id, database.query('seasons', 'is_current_season', 1)))
+            if(len(db_seasons_ids) == 0):
+                return False
+            for season_id in db_seasons_ids:
+                db_teams_ids = list(map(lambda x: x.id, database.query('teams', 'current_season_id', season_id)))
+                if(len(db_teams_ids) == 0): continue
+                count += len(db_teams_ids)
+            print(count)
+
     def query(self, action, includes = [], page = 1):
-        self.action = action
+        self.action = self.latest_query = action
         self.includes = includes
-        self.latest_query = self.action
+
         with requests.Session() as r:
             try:
-                response = r.get(constants.API_URL + self.action, params=[('api_token', secrets.API_KEY), ('page', str(page)), ('include', ",".join(self.includes))], timeout=constants.DEFAULT_TIMEOUT)
-                #print(f"{constants.API_URL}{self.action} 'include'={self.includes} 'page'={str(page)}")
+                response = r.get(constants.API_URL + self.action, params=[('api_token', secrets.API_KEY), ('page', str(page)), ('per_page', str(150)), ('include', ",".join(self.includes))], timeout=constants.DEFAULT_TIMEOUT)
                 self.query_amt += 1
             except Exception as e:
                 self.logger.error(f"API query : {self.latest_query} failed with {e}")
