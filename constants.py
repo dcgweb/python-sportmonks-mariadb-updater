@@ -2,8 +2,8 @@
 DEBUG = True
 
 # Loggging configuration
-LOG_LEVEL = 'INFO'
-LOG_MAX_BYTES = 1000000
+LOG_LEVEL = 'WARNING'
+LOG_MAX_BYTES = 10000000
 LOG_BACKUP_COUNT = 5
 
 APP_LOG_FILENAME = "./logs/app.log"
@@ -40,10 +40,22 @@ ACCOUNT_LIST = [
     'allsvenskanuk'
 ]
 
+LEAGUE_NAMES_LIST = [
+    'Premier League',
+    'Eredivisie',
+    'Bundesliga',
+    'Pro League',
+    'Ligue 1',
+    'Serie A',
+    'Primeira Liga',
+    'La Liga',
+    'Allsvenskan',
+    'Super Lig'
+]
+
 
 SELECTED_LEAGUES = [2,5,8,72,82,208,301,384,462,564,573,600]
-
+ACTIVE_COUNTRIES = [11, 17, 20, 32, 38, 41, 47, 251, 404, 462, 556]
 API_MULTI_QUERY_LIMIT = 25
-HARD_LIST_ACTIVE_SEASONS = [17299, 17367, 17420, 17426, 17228, 17361, 17138, 17160, 17488, 17463, 17480, 16838, 17449]    # I am sick and tired of duplicate PRIMARY key integrity errors. So, here we go aq!
 
 THIS_YEAR_00_TS = 1609459200 # 2021-01-01- 00:00:00
