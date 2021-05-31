@@ -64,7 +64,7 @@ class Db:
         if(len(separated_list['tbu']) != 0):
             with Session.begin() as session:
                 for tbu in separated_list['tbu']:
-                    # Update dictionaries do not use
+                    # Update dictionaries we do not use
                     # or require and id column so we
                     # will omit that key in each element
                     id_omitted_tbu = helper.remove_key(tbu, 'id')
@@ -127,6 +127,25 @@ class Db:
                 separated_list['tbu'].append(data)
 
         return separated_list
+
+    def get_all_filter(self, s = None, table = None, column = None, where = None):
+        if(table == None or column == None or s == None): return False
+        return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where)).all()
+
+    def get_all_in_(self, s = None, table = None, column = None, where_in = None):
+        if(table == None or column == None or s == None or where_in == None): return False
+        return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)).in_(where_in)).all()
+
+    def query(self, table = None, column = None, where = None):
+        Session = self.session(self.engine)
+        with Session.begin() as se:
+            tbl = self.mapper[table]
+            return se.query(tbl).filter(getattr(tbl, column) == where)
+
+
+
+
+            #return session.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where))
 
 
 Base = declarative_base()
