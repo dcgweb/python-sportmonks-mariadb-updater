@@ -66,7 +66,7 @@ class Data:
 
     def __do(self):
         for elem in self.raw_data:
-            if(self.endpoint == 'livescores' or self.endpoint == 'fixtures'):
+            if(self.endpoint == 'livescores' or self.endpoint == 'fixtures/now' or self.endpoint == 'fixtures'):
                 # Livescore structure
                 self.reshaped_data.append(
                     {
@@ -154,8 +154,8 @@ class Data:
                     {
                         'id': elem['player_id'],
                         'position_id': elem['position_id'],
-                        'captain': elem['captain'],
                         'number': elem['number'],
+                        'captain': elem['captain'],
                         'injured': elem['injured'],
                         'minutes': elem['minutes'],
                         'appearences': elem['appearences'],
@@ -203,7 +203,7 @@ class Data:
                         'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
                     }
                 )
-            elif(self.endpoint == 'standings/season'):
+            elif(self.endpoint == 'standings'):
                 self.reshaped_data.append(
                     {
                         'id': elem['id'],
@@ -219,7 +219,7 @@ class Data:
                         'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
                     }
                 )
-            elif(self.endpoint == 'teams/season'):
+            elif(self.endpoint == 'teams'):
                 self.reshaped_data.append(
                     {
                         'id': elem['id'],
