@@ -13,6 +13,7 @@ pymysql = "*"
 sqlalchemy = "*"
 sqlacodegen = "*"
 random-word-generator = "*"
+tweepy = "*"
 
 [dev-packages]
 
