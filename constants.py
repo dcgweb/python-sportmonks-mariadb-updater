@@ -11,13 +11,14 @@ EP_LOG_FILENAME  = "./logs/endpoint.log"
 API_LOG_FILENAME = "./logs/api.log"
 DB_LOG_FILENAME = "./logs/db.log"
 DATA_LOG_FILENAME = "./logs/data.log"
+TWITTER_LOG_FILENAME = "./logs/twitter.log"
 
 LOG_FORMAT = '%(asctime)s:%(name)s:%(levelname)s:%(funcName)s:%(message)s'
 
 
 # Defines timeouts for every api query and etc.
 DEFAULT_TIMEOUT = (15, 30)
-
+TWITTER_BLOG_POST_CATEGORY = 3 # this is purely required for my specific configuration, can be overlooked
 
 
 SECOND_API_URL = "https://www.thesportsdb.com/api/v1/json/"
