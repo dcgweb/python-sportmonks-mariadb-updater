@@ -15,7 +15,11 @@ class Api:
         self.file_handler.setFormatter(logging.Formatter(constants.LOG_FORMAT))
         self.logger.addHandler(self.file_handler)
 
+    def __enter__(self):
+        return self
+
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.logger.debug(f"Total Queries : {self.query_amt}")
-        if(self.error):
-            self.logger.error(f"Errors : {self.error}")
+        if exc_val:
+            self.logger.error(f'Suppressing exception: {exc_type}')
+            self.logger.error(f'Traceback: {exc_tb}')
+        return True
