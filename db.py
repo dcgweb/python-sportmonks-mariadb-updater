@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 import helper, secrets, constants, logging
 from logging.handlers import RotatingFileHandler
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.mysql import INTEGER, MEDIUMBLOB, TEXT, TINYINT, VARCHAR
+from sqlalchemy.dialects.mysql import INTEGER, MEDIUMBLOB, TEXT, TINYINT, VARCHAR, BIGINT, MEDIUMTEXT, LONGTEXT
 from sqlalchemy import Column, LargeBinary, TIMESTAMP, create_engine, inspect, text, select, func
 
 class Db:
@@ -13,7 +13,7 @@ class Db:
         self.select = select
         self.func = func
         self.text = text
-        self.mapper = {'api_queries': ApiQuery, 'countries': Country, 'fixtures': Fixture, 'heartbeat': Heartbeat, 'leagues': League, 'lineups': Lineup, 'players': Player, 'seasons': Season, 'standings': Standing, 'teams': Team, 'venues': Venue}
+        self.mapper = {'api_queries': ApiQuery, 'countries': Country, 'fixtures': Fixture, 'heartbeat': Heartbeat, 'leagues': League, 'lineups': Lineup, 'players': Player, 'seasons': Season, 'standings': Standing, 'teams': Team, 'venues': Venue, 'news': News}
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(getattr(logging, str(constants.LOG_LEVEL)))
         self.file_handler = RotatingFileHandler(constants.DB_LOG_FILENAME, maxBytes=constants.LOG_MAX_BYTES, backupCount=constants.LOG_BACKUP_COUNT)
@@ -25,9 +25,10 @@ class Db:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # close db connection
-        self.logger.info('DB Class exited successfully')
-        pass
+        if exc_val:
+            self.logger.error(f'Suppressing exception: {exc_type}')
+            self.logger.error(f'Traceback: {exc_tb}')
+        return True
 
     def insert_or_update(self, table = None, datas = []):
         """ Inserts and/or updates multiple data into
@@ -65,8 +66,8 @@ class Db:
             with Session.begin() as session:
                 for tbu in separated_list['tbu']:
                     # Update dictionaries we do not use
-                    # or require and id column so we
-                    # will omit that key in each element
+                    # or require and id column will be
+                    # omitted for each element
                     id_omitted_tbu = helper.remove_key(tbu, 'id')
                     session.query(self.mapper[table]).filter(self.mapper[table].id == tbu['id']).update(id_omitted_tbu, synchronize_session = False)
         return (len(separated_list['tbi']), len(separated_list['tbu']))
@@ -131,6 +132,10 @@ class Db:
     def get_all_filter(self, s = None, table = None, column = None, where = None):
         if(table == None or column == None or s == None): return False
         return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where)).all()
+
+    def get_one_filter(self, s = None, table = None, column = None, where = None):
+        if(table == None or column == None or s == None): return False
+        return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where)).one()
 
     def query(self, table = None, column = None, where = None):
         Session = self.session(self.engine)
@@ -338,3 +343,21 @@ class Venue(Base):
     image_path = Column(VARCHAR(255))
     coordinates = Column(VARCHAR(255))
     updated_at = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()"))
+
+class News(Base):
+    __tablename__ = 'news'
+
+    id = Column(BIGINT(20), primary_key=True)
+    url = Column(VARCHAR(250))
+    title = Column(MEDIUMTEXT)
+    second_title = Column(MEDIUMTEXT)
+    category = Column(TINYINT(4))
+    active = Column(TINYINT(4))
+    text = Column(LONGTEXT)
+    ext_image = Column(MEDIUMTEXT)
+    hashtags = Column(MEDIUMTEXT)
+    account_id = Column(MEDIUMTEXT)
+    account_screen_name = Column(MEDIUMTEXT)
+    account_name = Column(MEDIUMTEXT)
+    account_logo = Column(MEDIUMTEXT)
+    last_update = Column(TIMESTAMP)
