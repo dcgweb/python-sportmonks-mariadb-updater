@@ -1,7 +1,7 @@
-import data as formatter
 from time import sleep
+import data as formatter
 from logging.handlers import RotatingFileHandler
-import db, endpoint, helper, logging, constants
+import db, endpoint, helper, logging, constants, twitter
 
 
 class App:
@@ -136,21 +136,21 @@ if __name__ == "__main__":
     #gololdu.run('teams', ["stats"], 'teams')
     #gololdu.run('players', ["player"], 'players')
     #gololdu.run('standings', ["standings.team"], 'standings')
-    # i = 50
-    # while True:
-    #     # every 6 days
-    #     if(i % 2880 == 0):
-    #         gololdu.run('players', ["player"], 'players')
-    #         gololdu.run('countries', [], 'countries')
-    #         gololdu.run('leagues', [], 'leagues')
-    #     if(i % 480 == 0):
-    #         # every 24 hours
-    #         gololdu.run('teams', ["stats"], 'teams')
-    #     if(i % 50 == 0):
-    #         # every 25 minutes
-    #         tweetFetch.fetch()
-    #         gololdu.run('seasons', [], 'seasons')
-    #         gololdu.run('standings', ["standings.team"], 'standings')
-    #     gololdu.run('livescores', ["goals", "cards", "stats", "tvstations", "comments", "lineup"], 'fixtures')
-    #     sleep(30)
-    #     i = i + 1
+    i = 50
+    while True:
+        # every 6 days
+        if(i % 2880 == 0):
+            gololdu.run('players', ["player"], 'players')
+            gololdu.run('countries', [], 'countries')
+            gololdu.run('leagues', [], 'leagues')
+        if(i % 480 == 0):
+            # every 24 hours
+            gololdu.run('teams', ["stats"], 'teams')
+        if(i % 50 == 0):
+            # every 25 minutes
+            twitter.Twitter().run()
+            gololdu.run('seasons', [], 'seasons')
+            gololdu.run('standings', ["standings.team"], 'standings')
+        gololdu.run('livescores', ["goals", "cards", "stats", "tvstations", "comments", "lineup"], 'fixtures')
+        sleep(30)
+        i = i + 1

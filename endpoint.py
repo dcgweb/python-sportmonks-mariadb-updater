@@ -19,11 +19,17 @@ class Endpoint(Api):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.data = []
-        self.action = None
         self.includes = []
+        self.action = None
         self.latest_query = None
-        print(f"Total Queries : {self.query_amt}")
-        self.logger.info(f"Total Queries : {self.query_amt}")
+        if exc_val:
+            self.logger.error(f'Suppressing exception: {exc_type}')
+            self.logger.error(f'Traceback: {exc_tb}')
+        else:
+            self.logger.info(f"Total Queries : {self.query_amt}")
+            print(f"Total Queries : {self.query_amt}")
+        return True
+
 
     def get_total_pages(self, data):
         try:
