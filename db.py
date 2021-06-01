@@ -132,10 +132,6 @@ class Db:
         if(table == None or column == None or s == None): return False
         return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where)).all()
 
-    def get_all_in_(self, s = None, table = None, column = None, where_in = None):
-        if(table == None or column == None or s == None or where_in == None): return False
-        return s.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)).in_(where_in)).all()
-
     def query(self, table = None, column = None, where = None):
         Session = self.session(self.engine)
         with Session.begin() as se:
