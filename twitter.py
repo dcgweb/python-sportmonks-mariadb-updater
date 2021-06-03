@@ -1,4 +1,5 @@
 import tweepy, db, constants, helper, secrets, logging
+from tweepy.error import TweepError
 from logging.handlers import RotatingFileHandler
 import data as formatter
 
@@ -22,6 +23,7 @@ class Twitter:
         if exc_val:
             self.logger.error(f'Suppressing exception: {exc_type}')
             self.logger.error(f'Traceback: {exc_tb}')
+        self.logger.removeHandler(self.file_handler)
         return True
 
     def __auth(self):
@@ -69,6 +71,7 @@ class Twitter:
                     database.insert_or_update('news', formatted_data)
 
             # Retweet
-            self.logger.info(self.conn.retweet(tweet[0].id))
-
-Twitter().run()
+            try:
+                self.conn.retweet(tweet[0].id)
+            except Exception as e:
+                self.logger.warning(str(e))
