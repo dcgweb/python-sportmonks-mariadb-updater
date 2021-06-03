@@ -28,6 +28,7 @@ class Db:
         if exc_val:
             self.logger.error(f'Suppressing exception: {exc_type}')
             self.logger.error(f'Traceback: {exc_tb}')
+        self.logger.removeHandler(self.file_handler)
         return True
 
     def insert_or_update(self, table = None, datas = []):
@@ -142,11 +143,6 @@ class Db:
         with Session.begin() as se:
             tbl = self.mapper[table]
             return se.query(tbl).filter(getattr(tbl, column) == where)
-
-
-
-
-            #return session.query(self.mapper[table]).filter(getattr(self.mapper[table], str(column)) == str(where))
 
 
 Base = declarative_base()

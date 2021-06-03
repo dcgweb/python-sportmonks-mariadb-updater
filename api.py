@@ -22,4 +22,5 @@ class Api:
         if exc_val:
             self.logger.error(f'Suppressing exception: {exc_type}')
             self.logger.error(f'Traceback: {exc_tb}')
+        self.logger.removeHandler(self.file_handler)
         return True

@@ -22,6 +22,7 @@ class Data:
         if exc_val:
             self.logger.error(f'Suppressing exception: {exc_type}')
             self.logger.error(f'Traceback: {exc_tb}')
+        self.logger.removeHandler(self.file_handler)
         return True
 
     def __is_valid_type(self, data):
@@ -270,6 +271,14 @@ class Data:
                             'capacity': elem['capacity'],
                             'image_path': elem['image_path'],
                             'coordinates': elem['coordinates'],
+                            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                        }
+                    )
+                elif(self.endpoint == 'heartbeat'):
+                    self.reshaped_data.append(
+                        {
+                            'id': 1,
+                            'email_sent': 0,
                             'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
                         }
                     )

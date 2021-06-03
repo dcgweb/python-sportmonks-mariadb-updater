@@ -28,6 +28,7 @@ class Endpoint(Api):
         else:
             self.logger.info(f"Total Queries : {self.query_amt}")
             print(f"Total Queries : {self.query_amt}")
+        self.logger.removeHandler(self.file_handler)
         return True
 
 
@@ -48,20 +49,6 @@ class Endpoint(Api):
         for page in range(2, int(last_page) + 1):
             print(f'Paginating on {self.action}:{self.includes}:P{page}')
             self.query(self.action, self.includes, page)
-
-    def squad(self):
-        # https://soccer.sportmonks.com/api/v2.0/squad/season/{season_ID}/team/{team_ID}
-        with db.Db() as database:
-            count = 0
-            # Get active season id's
-            db_seasons_ids = list(map(lambda x: x.id, database.query('seasons', 'is_current_season', 1)))
-            if(len(db_seasons_ids) == 0):
-                return False
-            for season_id in db_seasons_ids:
-                db_teams_ids = list(map(lambda x: x.id, database.query('teams', 'current_season_id', season_id)))
-                if(len(db_teams_ids) == 0): continue
-                count += len(db_teams_ids)
-            print(count)
 
     def query(self, action, includes = [], page = 1):
         self.action = self.latest_query = action
