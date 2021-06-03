@@ -1,7 +1,10 @@
+#!/usr/bin/python3.6
 from time import sleep
 import data as formatter
+from datetime import datetime
 from logging.handlers import RotatingFileHandler
-import db, endpoint, helper, logging, constants, twitter
+import db, endpoint, helper, logging, constants, twitter, iterator
+from var_dump import var_dump
 
 
 class App:
@@ -13,6 +16,7 @@ class App:
         self.logger.addHandler(self.file_handler)
         self.current_ep = None
         self.current_db_tbl = None
+        self.iterator = iterator.Iterator()
 
     def insert(self, unformatted_data = None):
         if(unformatted_data == None):
@@ -126,31 +130,31 @@ class App:
                 self.insert(ep.data)
                 if(api_endpoint == 'livescores'):
                     self.extra_insert(ep.data, 'lineups', 'lineups')
+        sleep(constants.DEFAULT_SLEEP_INTERVAL)
+        # Heartbeat
+        self.heartbeat()
+
+    def heartbeat(self):
+        self.current_ep = self.current_db_tbl = 'heartbeat'
+        self.insert([{'heartbeat'}])
 
 if __name__ == "__main__":
-    gololdu = App()
-    #gololdu.run('livescores', ["goals", "cards", "stats", "tvstations", "comments", "lineup"], 'fixtures')
-    #gololdu.run('countries', [], 'countries')
-    #gololdu.run('leagues', [], 'leagues')
-    #gololdu.run('seasons', [], 'seasons')
-    #gololdu.run('teams', ["stats"], 'teams')
-    #gololdu.run('players', ["player"], 'players')
-    #gololdu.run('standings', ["standings.team"], 'standings')
-    i = 50
+    app = App()
     while True:
         # every 6 days
-        if(i % 2880 == 0):
-            gololdu.run('players', ["player"], 'players')
-            gololdu.run('countries', [], 'countries')
-            gololdu.run('leagues', [], 'leagues')
-        if(i % 480 == 0):
-            # every 24 hours
-            gololdu.run('teams', ["stats"], 'teams')
-        if(i % 50 == 0):
-            # every 25 minutes
+        if(int(app.iterator.get_iterator()) % 2882 == 0):
+            app.run('players', ["player"], 'players')
+            app.run('countries', [], 'countries')
+        # every 24 hours
+        if(int(app.iterator.get_iterator()) % 480 == 0):
+            app.logger.info('24 hours mark')
+            app.run('teams', ["stats"], 'teams')
+            app.run('leagues', [], 'leagues')
+        # every 25 minutes
+        if(int(app.iterator.get_iterator()) % 50 == 0):
+            app.logger.info('25 minutes mark')
             twitter.Twitter().run()
-            gololdu.run('seasons', [], 'seasons')
-            gololdu.run('standings', ["standings.team"], 'standings')
-        gololdu.run('livescores', ["goals", "cards", "stats", "tvstations", "comments", "lineup"], 'fixtures')
-        sleep(30)
-        i = i + 1
+            app.run('seasons', [], 'seasons')
+            app.run('standings', ["standings.team"], 'standings')
+        app.run('livescores', ["goals", "cards", "stats", "tvstations", "comments", "lineup"], 'fixtures')
+        app.iterator.set_iterator(app.iterator.get_iterator() + constants.ITERATION_STEP)
