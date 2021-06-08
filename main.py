@@ -4,7 +4,7 @@ import data as formatter
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 import db, endpoint, helper, logging, constants, twitter, iterator
-from var_dump import var_dump
+
 
 
 class App:
