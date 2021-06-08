@@ -61,6 +61,7 @@ class Endpoint(Api):
             except Exception as e:
                 self.logger.error(f"API query : {self.latest_query} failed with {e}")
                 self.error = e
+                r.close()
                 return False
             else:
                 self.logger.debug(f"Response = {str(r)}")
@@ -77,10 +78,14 @@ class Endpoint(Api):
                         self.paginator(last_page)
 
             if(isinstance(raw_data, dict) == False):
+                r.close()
                 return False
             if('data' not in raw_data):
+                r.close()
                 return False
             if(len(raw_data['data']) == 0):
+                r.close()
                 return False
 
             self.data.extend(raw_data['data'])
+            r.close()
