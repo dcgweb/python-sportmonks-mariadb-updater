@@ -1,6 +1,6 @@
 from api import Api
 from logging.handlers import RotatingFileHandler
-import db, requests, json, secrets, constants, logging
+import requests, json, secrets, constants, logging
 
 class Endpoint(Api):
 
